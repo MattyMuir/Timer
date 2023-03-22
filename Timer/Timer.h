@@ -1,5 +1,4 @@
 #pragma once
-#include <string>
 #include <chrono>
 
 #define TIMING 1
@@ -16,8 +15,9 @@
 
 class Timer
 {
-	using TimePoint = std::chrono::system_clock::time_point;
-	using Duration = std::chrono::system_clock::duration;
+	using Clock = std::chrono::steady_clock;
+	using TimePoint = Clock::time_point;
+	using Duration = Clock::duration;
 
 public:
 	Timer(bool start = true)
@@ -28,13 +28,11 @@ public:
 
 	void Start()
 	{
-		using namespace std::chrono;
-		start = system_clock::now();
+		start = Clock::now();
 	}
 	void Stop(bool log = true)
 	{
-		using namespace std::chrono;
-		TimePoint end = system_clock::now();
+		TimePoint end = Clock::now();
 		duration += (end - start);
 
 		if (log) Log();
@@ -61,9 +59,9 @@ protected:
 class ScopedTimer : Timer
 {
 public:
-	ScopedTimer(std::string_view name_) : Timer(false), name(name_) { Start(); }
+	ScopedTimer(const char* name_) : Timer(false), name(name_) { Start(); }
 	~ScopedTimer() { Stop(false); std::cout << name << " took: "; Log(); }
 
 protected:
-	std::string name;
+	const char* name;
 };

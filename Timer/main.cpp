@@ -13,9 +13,8 @@ int main()
 {
 	uint64_t num;
 	{
-		TIMER(t);
-		num = Fib(10);
-		STOP_LOG(t);
+		TIME_SCOPE(t);
+		num = Fib(25);
 	}
 
 	std::cout << num << '\n';
