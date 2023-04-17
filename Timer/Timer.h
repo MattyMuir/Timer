@@ -41,17 +41,19 @@ public:
 	void Log()
 	{
 		using namespace std::chrono;
-		static constexpr uint64_t num = duration_cast<Duration>(1s).count();
 
 		uint64_t count = duration.count();
-		double millis = (double)count / num * 1000.0;
+		double millis = (double)count / countPerSec * 1000.0;
 
 		if (millis < 1.0) std::cout << millis * 1000 << "us\n";
 		else std::cout << millis << "ms\n";
 	}
 	Duration GetDuration() { return duration; }
+	double GetMillis() { return (double)duration.count() / countPerSec * 1000.0; }
 
 protected:
+	static constexpr uint64_t countPerSec = std::chrono::duration_cast<Duration>(std::chrono::seconds{1}).count();
+
 	TimePoint start;
 	Duration duration;
 };
