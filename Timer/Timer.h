@@ -15,11 +15,11 @@
 
 class Timer
 {
+public:
 	using Clock = std::chrono::steady_clock;
 	using TimePoint = Clock::time_point;
 	using Duration = Clock::duration;
 
-public:
 	Timer(bool start = true)
 		: duration(0)
 	{
