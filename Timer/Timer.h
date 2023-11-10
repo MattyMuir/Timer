@@ -1,11 +1,23 @@
 #pragma once
+#ifdef LEGACY_CPP
+#include <iostream>
+#else
+#include <print>
+#endif
 #include <chrono>
 
 #define TIMING 1
 
 #if TIMING
 #define TIMER(name) Timer name
-#define STOP_LOG(name) { name.Stop(false); std::cout << #name << " took: "; name.Log(); }
+
+#ifdef LEGACY_CPP
+#define STOP_LOG(name) { name.Stop(false); std::cout << #name << " took "; name.Log(); }
+#else
+#define STOP_LOG(name) { name.Stop(false); std::print("{} took: ", #name); name.Log(); }
+#endif
+
+
 #define TIME_SCOPE(name) ScopedTimer name(#name)
 #else
 #define TIMER(name)
@@ -45,8 +57,13 @@ public:
 		uint64_t count = duration.count();
 		double millis = (double)count / countPerSec * 1000.0;
 
-		if (millis < 1.0) std::cout << millis * 1000 << "us\n";
+#ifdef LEGACY_CPP
+		if (millis < 1.0) std::cout << millis * 1000.0 << "us\n";
 		else std::cout << millis << "ms\n";
+#else
+		if (millis < 1.0) std::println("{:.2f}us", millis * 1000);
+		else std::println("{:.2f}ms", millis);
+#endif
 	}
 	Duration GetDuration() { return duration; }
 	double GetMillis() { return (double)duration.count() / countPerSec * 1000.0; }
@@ -62,7 +79,17 @@ class ScopedTimer : Timer
 {
 public:
 	ScopedTimer(const char* name_) : Timer(false), name(name_) { Start(); }
-	~ScopedTimer() { Stop(false); std::cout << name << " took: "; Log(); }
+	~ScopedTimer()
+	{
+		Stop(false);
+#ifdef LEGACY_CPP
+		std::cout << name << " took: ";
+#else
+		std::print("{} took: ", name);
+#endif
+		
+		Log();
+	}
 
 protected:
 	const char* name;
