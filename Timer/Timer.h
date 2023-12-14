@@ -6,9 +6,7 @@
 #endif
 #include <chrono>
 
-#define TIMING 1
-
-#if TIMING
+#ifndef NO_TIMING
 #define TIMER(name) Timer name
 
 #ifdef LEGACY_CPP
@@ -16,10 +14,9 @@
 #else
 #define STOP_LOG(name) { name.Stop(false); std::print("{} took: ", #name); name.Log(); }
 #endif
-
-
 #define TIME_SCOPE(name) ScopedTimer name(#name)
-#else
+
+#else // Not timing
 #define TIMER(name)
 #define STOP_LOG(name)
 #define TIME_SCOPE(name)
