@@ -1,7 +1,8 @@
 #include <iostream>
 #include <format>
 
-#include "Timer.h"
+#define TIMER_NPRINT
+#include "Timer2.h"
 
 uint64_t Fib(uint64_t n)
 {
@@ -11,11 +12,9 @@ uint64_t Fib(uint64_t n)
 
 int main()
 {
-	uint64_t num;
-	{
-		TIME_SCOPE(t);
-		num = Fib(25);
-	}
+	TIMER(t);
+	uint64_t num = Fib(25);
+	STOP_LOG(t);
 
 	std::cout << num << '\n';
 }
